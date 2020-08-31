@@ -196,14 +196,13 @@ if __name__ == '__main__':
 # %%
     ''' Electric field part '''
     # load E for primary beamline
-    E_prim, edges_prim = hb.read_E('prim', geomGlob.r_dict,
-                                   geomGlob.prim_angles)
+    E_prim, edges_prim = hb.read_E('prim', geomGlob)
     geomGlob.plates_edges.update(edges_prim)
+    print('Primary Beamline loaded')
 
     # load E for secondary beamline
     try:
-        E_sec, edges_sec = hb.read_E('sec', geomGlob.r_dict,
-                                     geomGlob.sec_angles)
+        E_sec, edges_sec = hb.read_E('sec', geomGlob)
         geomGlob.plates_edges.update(edges_sec)
     except FileNotFoundError:
         print('Secondary Beamline NOT FOUND')

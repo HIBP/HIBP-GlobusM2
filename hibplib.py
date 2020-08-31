@@ -21,7 +21,7 @@ class Traj():
         r0 - initial position [m]
         alpha - injection angle in XY plane [rad]
         beta - injection angle in XZ plane [rad]
-        U - list of voltages in [kV] [A2 B2 Oct1 Oct2 Oct3 Oct4]
+        U - list of voltages in [kV] [A2 B2 A3 B3]
         dt - timestep for RK algorithm [s]
         '''
         self.q = q
@@ -1082,7 +1082,7 @@ def save_E(beamline, plts_name, Ex, Ey, Ez, angles, geom,
     print('Electric field saved, ' + plts_name + '\n')
 
 
-def read_E(beamline, r_dict, plts_angles, dirname='elecfield'):
+def read_E(beamline, geom, dirname='elecfield'):
     '''
     read plate's shape and angle parametres along with electric field values
     from provided file (should lbe in the same directory)
@@ -1091,6 +1091,12 @@ def read_E(beamline, r_dict, plts_angles, dirname='elecfield'):
     :param r_dict: dict (key: name of plate,
                          value: coordinate array of plates centre)
     '''
+    r_dict = geom.r_dict
+    if beamline == 'prim':
+        plts_angles = geom.prim_angles
+    elif beamline == 'sec':
+        plts_angles = geom.sec_angles
+
     E = []
     edges_dict = {}
     dirname = dirname + '/' + beamline + \
