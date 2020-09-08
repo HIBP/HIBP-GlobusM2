@@ -8,7 +8,7 @@ import copy
 
 if __name__ == '__main__':
     # timestep [sec]
-    dt = 0.4e-7
+    dt = 0.6e-7  # 0.4e-7
 
     # toroidal field on the axis
     Btor = 0.7  # [T]
@@ -23,11 +23,11 @@ if __name__ == '__main__':
 
     # A2 plates voltage
     dUA2 = 1.0  # [kV]
-    UA2_range = np.arange(-5., 5. + dUA2, dUA2)  # [kV]
+    UA2_range = np.arange(-7., 7. + dUA2, dUA2)  # [kV]
 
     # B2 plates voltage
     UB2 = 0.0  # [kV]
-    dUB2 = 3.0  # [kV]
+    dUB2 = 5.0  # [kV]
 
     # B3 voltages
     UB3 = 10.0  # [kV]
@@ -45,8 +45,8 @@ if __name__ == '__main__':
     geomGlob = hb.Geometry()
 
     # alpha and beta angles of the PRIMARY beamline
-    alpha_prim = 75.  # grad
-    beta_prim = 0.  # grad
+    alpha_prim = 60.  # grad
+    beta_prim = -5  # grad
     gamma_prim = 0.  # grad
     geomGlob.prim_angles = np.array([alpha_prim, beta_prim, gamma_prim])
 
@@ -82,11 +82,11 @@ if __name__ == '__main__':
     geomGlob.r_dict['patr'] = np.array([xpatr, ypatr, zpatr])
 
     # distance from the injection pipe to the Alpha2 plates
-    dist_A2 = 0.1  # [m]
+    dist_A2 = 0.15/2 + 0.05  # [m]
     # distance from the injection pipe to the Beta2 plates
-    dist_B2 = dist_A2 + 0.25  # [m]
+    dist_B2 = dist_A2 + 0.15 + 0.05  # [m]
     # distance from the injection pipe to the initial piont of the traj [m]
-    dist_0 = dist_B2 + 0.2
+    dist_0 = dist_B2 + 0.15/2 + 0.1
 
     # convert degrees to radians
     drad = np.pi/180
@@ -245,6 +245,9 @@ if __name__ == '__main__':
             if tr.IsAimXY and tr.IsAimZ:
                 traj_list.append(tr)
                 print('\n Trajectory saved, UB2={:.2f} kV'.format(tr.U[1]))
+                UB2 = tr.U[1]
+            else:
+                print('NOT saved, sth wrong')
 
 # %%
     traj_list_passed = copy.deepcopy(traj_list)

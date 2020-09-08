@@ -537,6 +537,7 @@ def optimize_B2(tr, r_aim, geom, UB2, dUB2, E, B, dt,
     '''
     attempts_high = 0
     attempts_low = 0
+    attempts_opt = 0
     while True:
         tr.U[1], tr.dt1, tr.dt2 = UB2, dt, dt
         # pass fan of trajectories
@@ -628,7 +629,12 @@ def optimize_B2(tr, r_aim, geom, UB2, dUB2, E, B, dt,
                   .format(UB2, dz))
             UB2 = UB2 - dUB2*dz
             print('UB2 NEW = {:.2f}'.format(UB2))
+            attempts_opt += 1
         else:
+            break
+
+        if attempts_opt > 20:
+            print('too many attempts B2!')
             break
 
     return tr

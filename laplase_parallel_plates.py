@@ -38,24 +38,24 @@ def pde_step(U, Uupper_plate, Ulower_plate, upper_plate_flag,
 # %%
 if __name__ == '__main__':
 
-    beamline = 'prim'
-    # beamline = 'sec'
+    # beamline = 'prim'
+    beamline = 'sec'
     save_data = True
     # define plates geometry
     # initially plates are parallel to XZ plane
-    length = 0.2  # along X [m]
+    length = 0.15  # along X [m]
     width = 0.1  # along Z [m]
     thick = 0.01  # [m]
-    gap = 0.05  # distance between plates along Y [m]
+    gap = 0.1  # 0.05  # distance between plates along Y [m]
     plts_geom = np.array([length, width, thick, gap])
 
     # define center position
     plts_center = np.array([0., 0., 0.])  # plates center
-    alpha = 75.  # angle with X axis in XY plane (alpha)
-    beta = -5.  # angle with X axis in XZ plane (beta)
+    alpha = -15.  # 60.  # angle with X axis in XY plane (alpha)
+    beta = 12.  # -5.  # angle with X axis in XZ plane (beta)
     gamma0 = 0.
     # gamma 0 for A2, -90 for B2
-    gamma = gamma0 - 0.  # -90. # angle of rotation around X axis (gamma)
+    gamma = gamma0 - 90.  # -90. # angle of rotation around X axis (gamma)
     # convert degrees to radians
     drad = np.pi/180.
     plts_angles = np.array([alpha, beta, gamma])

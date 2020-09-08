@@ -78,17 +78,17 @@ def biot_savart(points, wires):
 
 
 # %% Poloidal field calculation
-def calc_Bpol(pf_coils, points, nx=3, ny=3):
+def calc_Bpol(pf_coils, points, nx=3, ny=3, disc_len=0.05):
     '''
     function calculates poloidal magnetic field from a toroidal coil
     pf_coils - dictionary with information about coils
     points - np array with points
     nx - number of filaments along x
     ny - number of filaments along y
+    discretisation length for wire [m]
     '''
     print('Calculating Poloidal Field')
 
-    disc_len = 0.05  # discretisation length for wire [m]
     B = {}
     for coil in pf_coils.keys():
 
@@ -137,10 +137,11 @@ def calc_Bpol(pf_coils, points, nx=3, ny=3):
 
 
 # %% Toroidal field calculation
-def calc_Btor(points):
+def calc_Btor(points, disc_len=0.05):
     '''
     function calculates toroidal field in points
     points - np array with x,y,z of n points
+    disc_len - discretisation length for wire [m]
     '''
     print('Calculating Toroidal Field')
     n_coils = 16                # total number of coils in TOKAMAK
@@ -149,7 +150,6 @@ def calc_Btor(points):
 
     n_xy = 4         # number of circuits in poloidal direction
     n_z = 4          # number of circuits in toroidal direction
-    disc_len = 0.05   # discretisation length for wire [m]
     curr = curr_tot/(n_xy*n_z)  # current in one circuit
     # initial toroidal angle of the first coil
     initial_coil_angle = (360/n_coils)*0.5
@@ -231,15 +231,15 @@ def import_Jplasm(filename):
     return J_vals, x_vals, y_vals
 
 
-def calc_Bplasm(points, filename, CurrTot):
+def calc_Bplasm(points, filename, CurrTot, disc_len=0.05):
     ''' calculate plasma field in points
     filename - Tokameq file with Jpl distribution
-    CurrTot - total plasma current in [MA] '''
+    CurrTot - total plasma current in [MA]
+    disc_len - discretisation length for wire [m] '''
     print('Calculating Plasma Field')
     J_vals, x_vals, y_vals = import_Jplasm(filename)
 
     Jtot = np.sum(J_vals)  # total J, used for normalisation
-    disc_len = 0.05  # discretisation length for wire [m]
 
     # define toroidal angle
     nfi = 40  # number of steps along toroidal angle
@@ -269,9 +269,10 @@ def calc_Bplasm(points, filename, CurrTot):
     return B, wires
 
 
-def calc_Bplasm_test(points, Btor, CurrTot):
+def calc_Bplasm_test(points, Btor, CurrTot, disc_len=0.05):
     ''' calculate test plasma field in points
-    CurrTot - total plasma current in [MA] '''
+    CurrTot - total plasma current in [MA]
+    disc_len - discretisation length for wire [m] '''
     print('Calculating Plasma Field')
     R = 0.36  # major tokamak radius
     a = 0.25  # minor plasma radius
@@ -280,7 +281,6 @@ def calc_Bplasm_test(points, Btor, CurrTot):
     mu_0 = 1
     aj = a * np.sqrt(mu_a / (mu_0-mu_a))
 
-    disc_len = 0.05  # discretisation length for wire [m]
     space_step = 0.04
     x_vals = np.arange(0.1, 0.55+space_step, space_step)
     y_vals = np.arange(-0.5, 0.5+space_step, space_step)
@@ -394,16 +394,17 @@ if __name__ == '__main__':
           ' volume_corner1 = {} [m]\n'.format(volume_corner1) +
           ' volume_corner2 = {} [m]\n'.format(volume_corner2))
 
+    disc_len = 0.02  # discretisation length for wire [m]
     # calculate B field at given points
-    B_tor, wires_tor = calc_Btor(points)
+    B_tor, wires_tor = calc_Btor(points, disc_len=disc_len)
 
     # Txt with plasma current calculated in Tokameq
     # tokameq_file = '1MA_sn.txt'
     # B_pl, wires_pl = calc_Bplasm(points, tokameq_file, Ipl)
-    B_pl, wires_pl = calc_Bplasm_test(points, Btor, Ipl)
+    B_pl, wires_pl = calc_Bplasm_test(points, Btor, Ipl, disc_len=disc_len)
 
     pf_coils = hb.import_PFcoils('PFCoils.dat')
-    B_pol_dict, wires_pol = calc_Bpol(pf_coils, points)
+    B_pol_dict, wires_pol = calc_Bpol(pf_coils, points, disc_len=disc_len)
 
     wires = wires_pol + wires_tor  # + wires_pl
 
