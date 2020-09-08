@@ -52,7 +52,7 @@ if __name__ == '__main__':
     # define center position
     plts_center = np.array([0., 0., 0.])  # plates center
     alpha = -15.  # 60.  # angle with X axis in XY plane (alpha)
-    beta = 12.  # -5.  # angle with X axis in XZ plane (beta)
+    beta = 20.  # -5.  # angle with X axis in XZ plane (beta)
     gamma0 = 0.
     # gamma 0 for A2, -90 for B2
     gamma = gamma0 - 90.  # -90. # angle of rotation around X axis (gamma)

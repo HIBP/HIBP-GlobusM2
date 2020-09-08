@@ -95,7 +95,7 @@ def plot_2d(B, points, plane='xy', cutoff=2, n_contours=50):
         # get coil inner and outer profile
         TF_coil_filename = 'TFCoil.dat'
         # load coil contours from txt
-        TF_coil = np.loadtxt(TF_coil_filename) / 1000  # [m]
+        TF_coil = np.loadtxt(TF_coil_filename)  # [m]
 
         # plot toroidal coil
         ax.plot(TF_coil[:, 0], TF_coil[:, 1], '--', color='k')

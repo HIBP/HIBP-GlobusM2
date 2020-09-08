@@ -146,7 +146,7 @@ def calc_Btor(points, disc_len=0.05):
     print('Calculating Toroidal Field')
     n_coils = 16                # total number of coils in TOKAMAK
     coil_width = 0.06          # coil width [m]
-    curr_tot = 110e3    # Total Current in coil [A]
+    curr_tot = 110e3    # Total Current in coil for Btor = 1 Tesla [A]
 
     n_xy = 4         # number of circuits in poloidal direction
     n_z = 4          # number of circuits in toroidal direction
@@ -278,7 +278,7 @@ def calc_Bplasm_test(points, Btor, CurrTot, disc_len=0.05):
     a = 0.25  # minor plasma radius
     k = 1.8  # plasma elongation
     mu_a = 0.2*CurrTot*R/(Btor*a**2)  # 1/q at the edge, CurrTot in MA
-    mu_0 = 1
+    mu_0 = 1  # 1/q at the center
     aj = a * np.sqrt(mu_a / (mu_0-mu_a))
 
     space_step = 0.04
@@ -361,7 +361,7 @@ def save_B_geometry(corner1, corner2, res, dirname='magfield'):
 # %%
 if __name__ == '__main__':
 
-    save_data = True
+    save_data = False
 
     if input('Recalculate magnetic fields [y/n]? ') == 'y':
         try:
@@ -374,11 +374,11 @@ if __name__ == '__main__':
     Ipl = 0.5  # Plasma current [MA]
 
     # Define grid points to caculate B
-    resolution = 0.02    # [m]
+    resolution = 0.06  # [m]
     # xmin ymin zmin [m]
-    volume_corner1 = (0, -0.6, -0.2)
+    volume_corner1 = (0, -0.5, -0.155)
     # xmax ymax zmax [m]
-    volume_corner2 = (1.0+resolution, 1.25+resolution, 0.2+resolution)
+    volume_corner2 = (1.25+resolution, 1.25+resolution, 0.155+resolution)
 
     # create grid of points
     grid = np.mgrid[volume_corner1[0]:volume_corner2[0]:resolution,

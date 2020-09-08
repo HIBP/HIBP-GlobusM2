@@ -6,12 +6,12 @@ import copy
 # %%
 ''' pass trajectories to different slits
 '''
-Ebeam = 35.
+Ebeam = 40.
 UA2 = 0.0
 
 n_slits = 5
 # add slits to Geometry
-geomGlob.add_slits(n_slits=n_slits, slit_dist=0.005, slit_w=2e-3,
+geomGlob.add_slits(n_slits=n_slits, slit_dist=0.01, slit_w=5e-3,
                    slit_l=0.1, slit_gamma=0.)
 r_slits = geomGlob.slits_edges
 rs = geomGlob.r_dict['slit']
@@ -30,7 +30,9 @@ for tr in traj_list_copy:
     else:
         continue
 
-    tr = hb.pass_to_slits(tr, dt, E, B, geomT15, timestep_divider=15)
+    tr = hb.pass_to_slits(tr, dt, E, B, geomGlob, timestep_divider=15)
+    break
 
 # %% plot trajectories
-hbplot.plot_traj_toslits(tr, geomT15, Btor, Ipl, plot_fan=True)
+hbplot.plot_traj_toslits(tr, geomGlob, Btor, Ipl,
+                         plot_fan=True, plot_flux=False)

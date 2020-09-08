@@ -11,17 +11,17 @@ import sys
 # %%
 ''' test FAT beam with focusing
 '''
-Ebeam = 140.
-UA2 = 3.0
+Ebeam = 40.
+UA2 = 0.0
 
-n_slits = 7
+n_slits = 5
 # add slits to Geometry
-geomT15.add_slits(n_slits=n_slits, slit_dist=0.01, slit_w=5e-3,
-                  slit_l=0.1, slit_gamma=-20.)
-r_slits = geomT15.slits_edges
-rs = geomT15.r_dict['slit']
+geomGlob.add_slits(n_slits=n_slits, slit_dist=0.01, slit_w=5e-3,
+                  slit_l=0.1, slit_gamma=0.)
+r_slits = geomGlob.slits_edges
+rs = geomGlob.r_dict['slit']
 # calculate normal to slit plane
-slit_plane_n = geomT15.slit_plane_n
+slit_plane_n = geomGlob.slit_plane_n
 
 # %%
 traj_list_copy = copy.deepcopy(traj_list_oct)
@@ -29,8 +29,8 @@ traj_list_copy = copy.deepcopy(traj_list_oct)
 
 # %%
 # set number of filaments in a beam
-d_beam = 0.02  # beam diameter [m]
-n_filaments_xy = 7  # number of filaments in xy plane (must be ODD)
+d_beam = 0.01  # beam diameter [m]
+n_filaments_xy = 3  # number of filaments in xy plane (must be ODD)
 skip_center_traj = True
 n_gamma = 4  # number of chords in beam cross-section
 foc_len = 50  # distance from the first point of the trajectory to the focus
@@ -76,39 +76,41 @@ for tr in traj_list_copy:
             tr_fat = copy.deepcopy(tr)
             tr_fat.RV0[0, :] = np.hstack([r_rot, v_rot])
             # tr_fat.U = [0., 0., 0., 0.]
-            # tr_fat.pass_prim(E, B, geomT15, tmax=0.01)
-            tr_fat = hb.pass_to_slits(tr_fat, dt, E, B, geomT15,
-                                      timestep_divider=10)
+            # tr_fat.pass_prim(E, B, geomGlob, tmax=0.01)
+            tr_fat = hb.pass_to_slits(tr_fat, dt, E, B, geomGlob,
+                                      timestep_divider=5)
             fat_beam_list.append(tr_fat)
             if abs(y) < 1e-6:
                 break
 
 # %% save zones
-dirname = 'output/' + 'B{}_I{}'.format(int(Btor), int(Ipl))
-for i_slit in range(n_slits):
-    zone = np.empty([0, 3])
-    for tr in fat_beam_list:
-        zone = np.vstack([zone, tr.ion_zones[i_slit]])
-    fname = dirname + '/' + 'E{}'.format(int(Ebeam)) + \
-        '_UA2{}'.format(int(UA2)) + '_slit{}.txt'.format(i_slit)
-    np.savetxt(fname, zone, fmt='%.4e')
+# dirname = 'output/' + 'B{}_I{}'.format(int(Btor), int(Ipl))
+# for i_slit in range(n_slits):
+#     zone = np.empty([0, 3])
+#     for tr in fat_beam_list:
+#         zone = np.vstack([zone, tr.ion_zones[i_slit]])
+#     fname = dirname + '/' + 'E{}'.format(int(Ebeam)) + \
+#         '_UA2{}'.format(int(UA2)) + '_slit{}.txt'.format(i_slit)
+#     np.savetxt(fname, zone, fmt='%.4e')
 
 # %% plot results
-fig, (ax1, ax3) = plt.subplots(nrows=1, ncols=2)
+# fig, (ax1, ax3) = plt.subplots(nrows=1, ncols=2)
+fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3)
 
 hbplot.set_axes_param(ax1, 'X (m)', 'Y (m)')
-# set_axes_param(ax2, 'X (m)', 'Z (m)')
+hbplot.set_axes_param(ax2, 'X (m)', 'Z (m)')
 hbplot.set_axes_param(ax3, 'Z (m)', 'Y (m)')
 ax1.set_title('E={} keV, UA2={} kV, Btor={} T, Ipl={} MA'
               .format(tr.Ebeam, tr.U[0], Btor, Ipl))
 
-# plot T-15 camera, coils and separatrix on XY plane
-geomT15.plot_geom(ax1)
+# plot tokamak camera, coils and separatrix on XY plane
+geomGlob.plot_geom(ax1)
 # plot plates
-geomT15.plot_plates(ax1, axes='XY')
-geomT15.plot_plates(ax3, axes='ZY')
+geomGlob.plot_plates(ax1, axes='XY')
+geomGlob.plot_plates(ax2, axes='XZ')
+geomGlob.plot_plates(ax3, axes='ZY')
 
-n_slits = geomT15.slits_edges.shape[0]
+n_slits = geomGlob.slits_edges.shape[0]
 # set color cycler
 prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
@@ -116,17 +118,20 @@ colors = colors[:n_slits]
 colors = cycle(colors)
 
 # draw slits
-r_slits = geomT15.slits_edges
-slits_spot = geomT15.slits_spot
+r_slits = geomGlob.slits_edges
+slits_spot = geomGlob.slits_spot
 ax1.fill(slits_spot[:, 0], slits_spot[:, 1], fill=False)
+ax2.fill(slits_spot[:, 0], slits_spot[:, 2], fill=False)
 ax3.fill(slits_spot[:, 2], slits_spot[:, 1], fill=False)
 for i in range(n_slits):
     c = next(colors)
     # plot centers
     ax1.plot(r_slits[i, 0, 0], r_slits[i, 0, 1], '*', color=c)
+    ax2.plot(r_slits[i, 0, 0], r_slits[i, 0, 2], '*', color=c)
     ax3.plot(r_slits[i, 0, 2], r_slits[i, 0, 1], '*', color=c)
     # plot edges
     ax1.fill(r_slits[i, 1:, 0], r_slits[i, 1:, 1], fill=False)
+    ax2.fill(r_slits[i, 1:, 0], r_slits[i, 1:, 2], fill=False)
     ax3.fill(r_slits[i, 1:, 2], r_slits[i, 1:, 1], fill=False)
 
 # plot trajectories
@@ -136,6 +141,8 @@ for tr in fat_beam_list:
     tr.plot_prim(ax3, axes='ZY', color='k', full_primary=True)
     ax1.plot(tr.RV0[0, 0], tr.RV0[0, 1], 'o',
              color='k', markerfacecolor='white')
+    ax1.plot(tr.RV0[0, 0], tr.RV0[0, 2], 'o',
+             color='k', markerfacecolor='white')
     ax3.plot(tr.RV0[0, 2], tr.RV0[0, 1], 'o',
              color='k', markerfacecolor='white')
 
@@ -144,6 +151,7 @@ for tr in fat_beam_list:
         c = next(colors)
         for fan_tr in tr.RV_sec_toslits[i_slit]:
             ax1.plot(fan_tr[:, 0], fan_tr[:, 1], color=c)
+            ax2.plot(fan_tr[:, 0], fan_tr[:, 2], color=c)
             ax3.plot(fan_tr[:, 2], fan_tr[:, 1], color=c)
 
     # plot zones
@@ -151,6 +159,8 @@ for tr in fat_beam_list:
         c = next(colors)
         for fan_tr in tr.RV_sec_toslits[i_slit]:
             ax1.plot(fan_tr[0, 0], fan_tr[0, 1], 'o', color=c,
+                     markerfacecolor='white')
+            ax2.plot(fan_tr[0, 0], fan_tr[0, 2], 'o', color=c,
                      markerfacecolor='white')
             ax3.plot(fan_tr[0, 2], fan_tr[0, 1], 'o', color=c,
                      markerfacecolor='white')
@@ -164,18 +174,18 @@ hbplot.set_axes_param(ax3, 'Z (m)', 'Y (m)')
 ax1.set_title('E={} keV, UA2={} kV, Btor={} T, Ipl={} MA'
               .format(tr.Ebeam, tr.U[0], Btor, Ipl))
 
-# plot T-15 camera, coils and separatrix on XY plane
-geomT15.plot_geom(ax1)
+# plot tokamak camera, coils and separatrix on XY plane
+geomGlob.plot_geom(ax1)
 # plot plates
-geomT15.plot_plates(ax1, axes='XY')
-geomT15.plot_plates(ax3, axes='ZY')
+geomGlob.plot_plates(ax1, axes='XY')
+geomGlob.plot_plates(ax3, axes='ZY')
 # plot slits
-geomT15.plot_slits(ax1, axes='XY')
-geomT15.plot_slits(ax3, axes='ZY')
+geomGlob.plot_slits(ax1, axes='XY')
+geomGlob.plot_slits(ax3, axes='ZY')
 
 # plot flux surfaces
-Psi_vals, x_vals, y_vals, bound_flux = hb.import_Bflux('1MA_sn.txt')
-ax1.contour(x_vals, y_vals, Psi_vals, 150)
+# Psi_vals, x_vals, y_vals, bound_flux = hb.import_Bflux('1MA_sn.txt')
+# ax1.contour(x_vals, y_vals, Psi_vals, 150)
 
 # plot trajectories
 for tr in fat_beam_list:
@@ -190,7 +200,7 @@ for tr in fat_beam_list:
 #     #         ax1.plot(fan_tr[:, 0], fan_tr[:, 1], color=c)
 #     #         ax3.plot(fan_tr[:, 2], fan_tr[:, 1], color=c)
 
-n_slits = geomT15.slits_edges.shape[0]
+n_slits = geomGlob.slits_edges.shape[0]
 # set color cycler
 prop_cycle = plt.rcParams['axes.prop_cycle']
 colors = prop_cycle.by_key()['color']
@@ -203,14 +213,18 @@ for i_slit in range(1):
     coords_first = np.empty([0, 3])
     coords_last = np.empty([0, 3])
     for tr in fat_beam_list:
+        # skip empty arrays
+        if tr.ion_zones[0].shape[0] == 0:
+            continue
         coords_first = np.vstack([coords_first, tr.ion_zones[i_slit][0, 0:3]])
         coords_last = np.vstack([coords_last, tr.ion_zones[i_slit][-1, 0:3]])
         # plot zones of each filament
         ax1.plot(tr.ion_zones[i_slit][:, 0], tr.ion_zones[i_slit][:, 1],
-                  'o', color=c, markerfacecolor='white')
+                 'o', color=c, markerfacecolor='white')
         ax3.plot(tr.ion_zones[i_slit][:, 2], tr.ion_zones[i_slit][:, 1],
-                  'o', color=c, markerfacecolor='white')
-    coords = np.vstack([coords_first, coords_last[::-1]])
+                 'o', color=c, markerfacecolor='white')
+    # coords = np.vstack([coords_first, coords_last[::-1]])
+    coords = np.vstack([coords_first, coords_last])
     coords = np.vstack([coords, coords[0, :]])
     # ploy in XY plane
     ax1.fill(coords[:, 0], coords[:, 1], '--', color=c)
@@ -218,4 +232,3 @@ for i_slit in range(1):
     # plot in ZY plane
     ax3.fill(coords[:, 2], coords[:, 1], '--', color=c)
     ax3.plot(coords[:, 2], coords[:, 1], color='k', lw=0.5)
-

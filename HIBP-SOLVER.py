@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     # initial beam energy range
     dEbeam = 5.
-    Ebeam_range = np.arange(20., 50. + dEbeam, dEbeam)  # [keV]
+    Ebeam_range = np.arange(40., 40. + dEbeam, dEbeam)  # [keV]
 
     # A2 plates voltage
     dUA2 = 1.0  # [kV]
@@ -27,15 +27,15 @@ if __name__ == '__main__':
 
     # B2 plates voltage
     UB2 = 0.0  # [kV]
-    dUB2 = 5.0  # [kV]
+    dUB2 = 5.0  # [kV/m]
 
     # B3 voltages
-    UB3 = 10.0  # [kV]
-    dUB3 = 15.0  # [kV]
+    UB3 = -1.0  # [kV]
+    dUB3 = 40.0  # [kV/m]
 
     # A3 voltages
-    UA3 = 10.0  # [kV]
-    dUA3 = 5.0  # [kV]
+    UA3 = 0.0  # [kV]
+    dUA3 = 40.0  # [kV/m]
 
     r_plasma = 0.3
     R = 0.36  # tokamak major radius [m]
@@ -45,9 +45,9 @@ if __name__ == '__main__':
     geomGlob = hb.Geometry()
 
     # alpha and beta angles of the PRIMARY beamline
-    alpha_prim = 60.  # grad
-    beta_prim = -5  # grad
-    gamma_prim = 0.  # grad
+    alpha_prim = 60.  # deg
+    beta_prim = -5  # deg
+    gamma_prim = 0.  # deg
     geomGlob.prim_angles = np.array([alpha_prim, beta_prim, gamma_prim])
 
     # coordinates of the injection pipe [m]
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     geomGlob.r_dict['r0'] = r0
 
 # %% AIM position (BEFORE the Secondary beamline)
-    xaim = 0.7
+    xaim = 0.75
     yaim = 0.0
     zaim = 0.0
     r_aim = np.array([xaim, yaim, zaim])
@@ -134,17 +134,17 @@ if __name__ == '__main__':
 
 # %% SECONDARY beamline geometry
     # alpha and beta angles of the SECONDARY beamline
-    alpha_sec = 0.  # grad
-    beta_sec = 0.  # grad
-    gamma_sec = 0.  # grad
+    alpha_sec = -15.  # deg
+    beta_sec = 20.  # deg
+    gamma_sec = 0.  # deg
     geomGlob.sec_angles = np.array([alpha_sec, beta_sec, gamma_sec])
 
     # distance from r_aim to the ALPHA3 center
-    dist_A3 = 0.1  # 1/2 of plates length
+    dist_A3 = 0.05  # 1/2 of plates length
     # distance from r_aim to the BETA3 center
-    dist_B3 = dist_A3 + 0.25
+    dist_B3 = dist_A3 + 0.15 +0.05
     # distance from r_aim the entrance slit of the analyzer
-    dist_s = dist_B3 + 0.1
+    dist_s = dist_B3 + 0.15/2 + 0.1
 
     # coordinates of the center of the ALPHA3 plates
     xA3 = xaim + dist_A3*np.cos(alpha_sec*drad) * \
@@ -264,18 +264,20 @@ if __name__ == '__main__':
     # hbplot.plot_fan(traj_list_passed, geomGlob, 240., 40., Btor, Ipl)
 
 # %%
-#     print('\n Secondary beamline optimization')
-#     traj_list_oct = []
-#     for tr in copy.deepcopy(traj_list_passed):
-#         tr = hb.optimize_A3B3(tr, rs, geomGlob,
-#                               UA3, UB3, dUA3, dUB3, E, B, dt,
-#                               eps_xy=1e-3, eps_z=1e-3)
-#         if not tr.IntersectGeometrySec:
-#             traj_list_oct.append(tr)
+    print('\n Secondary beamline optimization')
+    traj_list_oct = []
+    for tr in copy.deepcopy(traj_list_passed):
+        tr = hb.optimize_A3B3(tr, rs, geomGlob,
+                              UA3, UB3, dUA3, dUB3, E, B, dt,
+                              eps_xy=1e-3, eps_z=1e-3)
+        if not tr.IntersectGeometrySec:
+            traj_list_oct.append(tr)
+            UA3 = tr.U[2]
+            UB3 = tr.U[3]
 
-# # %%
-#     hbplot.plot_traj(traj_list_oct, geomGlob, 240., 40., Btor, Ipl)
-#     hbplot.plot_scan(traj_list_oct, geomGlob, 240., Btor, Ipl)
+# %%
+    hbplot.plot_traj(traj_list_oct, geomGlob, 40., 0., Btor, Ipl)
+    hbplot.plot_scan(traj_list_oct, geomGlob, 40., Btor, Ipl)
 
 # %% Save list of trajectories
 
