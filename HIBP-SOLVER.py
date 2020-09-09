@@ -92,28 +92,28 @@ if __name__ == '__main__':
     drad = np.pi/180
     # coordinates of the center of the ALPHA2 plates
     xA2 = xpatr + dist_A2*np.cos(alpha_prim*drad) * \
-        np.cos(beta_prim*drad)
+          np.cos(beta_prim*drad)
     yA2 = ypatr + dist_A2*np.sin(alpha_prim*drad)
     zA2 = zpatr - dist_A2*np.cos(alpha_prim*drad) * \
-        np.sin(beta_prim*drad)
+          np.sin(beta_prim*drad)
     rA2 = np.array([xA2, yA2, zA2])
     geomGlob.r_dict['A2'] = rA2
 
     # coordinates of the center of the BETA2 plates
     xB2 = xpatr + dist_B2*np.cos(alpha_prim*drad) * \
-        np.cos(beta_prim*drad)
+          np.cos(beta_prim*drad)
     yB2 = ypatr + dist_B2*np.sin(alpha_prim*drad)
     zB2 = zpatr - dist_B2*np.cos(alpha_prim*drad) * \
-        np.sin(beta_prim*drad)
+          np.sin(beta_prim*drad)
     rB2 = np.array([xB2, yB2, zB2])
     geomGlob.r_dict['B2'] = rB2
 
     # coordinates of the initial point of the trajectory [m]
     x0 = xpatr + dist_0*np.cos(alpha_prim*drad) * \
-        np.cos(beta_prim*drad)
+         np.cos(beta_prim*drad)
     y0 = ypatr + dist_0*np.sin(alpha_prim*drad)
     z0 = zpatr - dist_0*np.cos(alpha_prim*drad) * \
-        np.sin(beta_prim*drad)
+         np.sin(beta_prim*drad)
     r0 = np.array([x0, y0, z0])
     geomGlob.r_dict['r0'] = r0
 
@@ -193,7 +193,7 @@ if __name__ == '__main__':
     # geomGlob.in_fw = np.loadtxt('infw.txt') / 1000  # [m]
     # geomGlob.out_fw = np.loadtxt('outfw.txt') / 1000  # [m]
 
-# %%
+# %% ELECTRIC field
     ''' Electric field part '''
     # load E for primary beamline
     E_prim, edges_prim = hb.read_E('prim', geomGlob)
@@ -210,7 +210,7 @@ if __name__ == '__main__':
 
     E = E_prim + E_sec
 
-# %%
+# %% MAGNETIC field
     ''' Magnetic field part '''
     pf_coils = hb.import_PFcoils('PFCoils.dat')
 
@@ -220,7 +220,7 @@ if __name__ == '__main__':
         dirname = 'magfield'
         B = hb.read_B(Btor, Ipl, PF_dict, dirname)
 
-# %%
+# %% PRIMARY beamline optimization
     print('\n Primary beamline optimization')
     # define list of trajectores that hit r_aim
     traj_list = []
@@ -263,7 +263,7 @@ if __name__ == '__main__':
     # hbplot.plot_sec_angles(traj_list_passed, Btor, Ipl, Ebeam='all')
     # hbplot.plot_fan(traj_list_passed, geomGlob, 240., 40., Btor, Ipl)
 
-# %%
+# %% SECONDARY beamline optimization
     print('\n Secondary beamline optimization')
     traj_list_oct = []
     for tr in copy.deepcopy(traj_list_passed):

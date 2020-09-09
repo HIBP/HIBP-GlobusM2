@@ -7,7 +7,7 @@ import copy
 ''' pass trajectories to different slits
 '''
 Ebeam = 40.
-UA2 = 0.0
+UA2 = 2.0
 
 n_slits = 5
 # add slits to Geometry
@@ -30,7 +30,7 @@ for tr in traj_list_copy:
     else:
         continue
 
-    tr = hb.pass_to_slits(tr, dt, E, B, geomGlob, timestep_divider=15)
+    tr = hb.pass_to_slits(tr, dt, E, B, geomGlob, timestep_divider=8)
     break
 
 # %% plot trajectories

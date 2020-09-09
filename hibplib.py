@@ -295,6 +295,10 @@ class Geometry():
         # arrays for primary and secondary beamline angles
         self.prim_angles = np.array([])
         self.sec_angles = np.array([])
+        # plasma geometry
+        self.R = 0
+        self.r_plasma = 0
+        self.elon = 0
 
     def check_chamb_ent_intersect(self, point1, point2):
         ''' check the intersection between segment 1->2 and the chamber
@@ -383,43 +387,41 @@ class Geometry():
         self.slit_plane_n = slit_plane_n
         self.slits_spot = slits_spot
 
-    def plot_geom(self, ax, major_radius=1.5, plot_sep=True):
+    def plot_geom(self, ax, axes='XY', plot_sep=True, plot_aim=True):
         '''
-        plot toroidal and poloidal field coils, camera and
-        separatrix in XY plane
+        plot tokamak, plates, aim dot and central slit dot
         '''
-        # plot toroidal coil
-        ax.plot(self.coil[:, 0], self.coil[:, 1], '--', color='k')
-        ax.plot(self.coil[:, 2], self.coil[:, 3], '--', color='k')
+        # plot toroidal and poloidal field coils, camera and
+        # separatrix in XY plane
+        if axes == 'XY':
+            # plot toroidal coil
+            ax.plot(self.coil[:, 0], self.coil[:, 1], '--', color='k')
+            ax.plot(self.coil[:, 2], self.coil[:, 3], '--', color='k')
 
-        # get T-15 camera and plasma contours
-        for i in range(self.camera.shape[0]):
-            ax.plot(self.camera[i, [3, 0]],
-                    self.camera[i, [4, 1]], color='tab:blue')
+            # get tokamak camera and plasma contours
+            for i in range(self.camera.shape[0]):
+                ax.plot(self.camera[i, [3, 0]],
+                        self.camera[i, [4, 1]], color='tab:blue')
 
-        # plot first wall
-        # ax.plot(self.in_fw[:, 0], self.in_fw[:, 1], color='k')
-        # ax.plot(self.out_fw[:, 0], self.out_fw[:, 1], color='k')
+            # plot first wall
+            # ax.plot(self.in_fw[:, 0], self.in_fw[:, 1], color='k')
+            # ax.plot(self.out_fw[:, 0], self.out_fw[:, 1], color='k')
 
-        if plot_sep:
-            ax.plot(self.sep[:, 0], self.sep[:, 1], 'o', markersize=2,
-                    color='b')  # 'tab:orange')
+            if plot_sep:
+                ax.plot(self.sep[:, 0], self.sep[:, 1], 'o', markersize=2,
+                        color='b')  # 'tab:orange')
 
-        for coil in self.pf_coils.keys():
-            xc = self.pf_coils[coil][0]
-            yc = self.pf_coils[coil][1]
-            dx = self.pf_coils[coil][2]
-            dy = self.pf_coils[coil][3]
-            ax.add_patch(Rectangle((xc-dx/2, yc-dy/2), dx, dy,
-                                   linewidth=1, edgecolor='tab:gray',
-                                   facecolor='tab:gray'))
+            for coil in self.pf_coils.keys():
+                xc = self.pf_coils[coil][0]
+                yc = self.pf_coils[coil][1]
+                dx = self.pf_coils[coil][2]
+                dy = self.pf_coils[coil][3]
+                ax.add_patch(Rectangle((xc-dx/2, yc-dy/2), dx, dy,
+                                       linewidth=1, edgecolor='tab:gray',
+                                       facecolor='tab:gray'))
 
-    def plot_plates(self, ax, axes='XY'):
-        '''plot plates
-        axes='XY', 'XZ', 'ZY'
-        '''
-        axes_dict = {'XY': (0, 1), 'XZ': (0, 2), 'ZY': (2, 1)}
-        index_X, index_Y = axes_dict[axes]
+        index_X, index_Y = get_index(axes)
+        # plot plates
         for name in self.plates_edges.keys():
             ax.fill(self.plates_edges[name][0][:, index_X],
                     self.plates_edges[name][0][:, index_Y], fill=False,
@@ -428,36 +430,41 @@ class Geometry():
                     self.plates_edges[name][1][:, index_Y], fill=False,
                     hatch='/', linewidth=2)
 
-    def plot_aim(self, ax, axes='XY', color='r'):
-        ''' plot aim dot
-        '''
-        axes_dict = {'XY': (0, 1), 'XZ': (0, 2), 'ZY': (2, 1)}
-        index_X, index_Y = axes_dict[axes]
-        ax.plot(self.r_dict['aim'][index_X], self.r_dict['aim'][index_Y],
-                '*', color=color)
+        if plot_aim:
+            # plot aim dot
+            ax.plot(self.r_dict['aim'][index_X], self.r_dict['aim'][index_Y],
+                    '*', color='r')
+            # plot the center of the central slit
+            ax.plot(self.r_dict['slit'][index_X], self.r_dict['slit'][index_Y],
+                    '*', color='g')
 
-    def plot_slit(self, ax, axes='XY', color='g'):
-        ''' plot slit dot
-        '''
-        axes_dict = {'XY': (0, 1), 'XZ': (0, 2), 'ZY': (2, 1)}
-        index_X, index_Y = axes_dict[axes]
-        ax.plot(self.r_dict['slit'][index_X], self.r_dict['slit'][index_Y],
-                '*', color=color)
-
-    def plot_slits(self, ax, axes='XY'):
+    def plot_slits(self, ax, axes='XY', color='g', n_slit='all'):
         ''' plot slits contours
         '''
-        axes_dict = {'XY': (0, 1), 'XZ': (0, 2), 'ZY': (2, 1)}
-        index_X, index_Y = axes_dict[axes]
+        index_X, index_Y = get_index(axes)
 
         r_slits = self.slits_edges
-        n_slits = r_slits.shape[0]
-        for i in range(n_slits):
+        if n_slit == 'all':
+            slits = range(r_slits.shape[0])
+        else:
+            slits = [n_slit]
+
+        for i in slits:
             # plot center
-            ax.plot(r_slits[i, 0, index_X], r_slits[i, 0, index_Y], '*')
+            ax.plot(r_slits[i, 0, index_X], r_slits[i, 0, index_Y],
+                    '*', color=color)
             # plot edge
             ax.fill(r_slits[i, 1:, index_X], r_slits[i, 1:, index_Y],
                     fill=False)
+        # plot slits spot
+        ax.fill(self.slits_spot[:, index_X],
+                self.slits_spot[:, index_Y], fill=False)
+
+
+# %% get index
+def get_index(axes):
+    axes_dict = {'XY': (0, 1), 'XZ': (0, 2), 'ZY': (2, 1)}
+    return axes_dict[axes]
 
 
 # %% Runge-Kutta

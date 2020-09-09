@@ -141,7 +141,7 @@ for tr in fat_beam_list:
     tr.plot_prim(ax3, axes='ZY', color='k', full_primary=True)
     ax1.plot(tr.RV0[0, 0], tr.RV0[0, 1], 'o',
              color='k', markerfacecolor='white')
-    ax1.plot(tr.RV0[0, 0], tr.RV0[0, 2], 'o',
+    ax2.plot(tr.RV0[0, 0], tr.RV0[0, 2], 'o',
              color='k', markerfacecolor='white')
     ax3.plot(tr.RV0[0, 2], tr.RV0[0, 1], 'o',
              color='k', markerfacecolor='white')
