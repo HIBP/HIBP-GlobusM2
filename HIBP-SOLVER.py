@@ -55,8 +55,8 @@ if __name__ == '__main__':
     gamma_prim = 0.  # deg
     geomGlob.prim_angles = np.array([alpha_prim, beta_prim, gamma_prim])
 
-    # coordinates of the injection pipe [m]
-    # coordinates of injection pipe and chamber entrance coordinates [m]
+    # coordinates of the injection port [m]
+    # coordinates of injection port and chamber entrance coordinates [m]
 #   port 75 deg
     xpatr = 0.4672459
     ypatr = 0.5753405
@@ -86,11 +86,11 @@ if __name__ == '__main__':
 
     geomGlob.r_dict['patr'] = np.array([xpatr, ypatr, zpatr])
 
-    # distance from the injection pipe to the Alpha2 plates
+    # distance from the injection port to the Alpha2 plates
     dist_A2 = 0.15/2 + 0.05  # [m]
-    # distance from the injection pipe to the Beta2 plates
+    # distance from the injection port to the Beta2 plates
     dist_B2 = dist_A2 + 0.15 + 0.05  # [m]
-    # distance from the injection pipe to the initial piont of the traj [m]
+    # distance from the injection port to the initial piont of the traj [m]
     dist_0 = dist_B2 + 0.15/2 + 0.1
 
     # convert degrees to radians

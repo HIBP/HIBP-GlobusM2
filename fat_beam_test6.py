@@ -3,10 +3,6 @@ import hibplib as hb
 import hibpplotlib as hbplot
 import copy
 import matplotlib.pyplot as plt
-from itertools import cycle
-from scipy.spatial import ConvexHull, convex_hull_plot_2d
-import alphashape
-import sys
 
 # %%
 ''' test FAT beam with focusing
@@ -17,7 +13,7 @@ UA2 = 2.0
 n_slits = 5
 # add slits to Geometry
 geomGlob.add_slits(n_slits=n_slits, slit_dist=0.01, slit_w=5e-3,
-                  slit_l=0.1, slit_gamma=0.)
+                   slit_l=0.1, slit_gamma=0.)
 r_slits = geomGlob.slits_edges
 rs = geomGlob.r_dict['slit']
 # calculate normal to slit plane
