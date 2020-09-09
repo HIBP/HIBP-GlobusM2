@@ -99,8 +99,8 @@ hbplot.plot_fat_beam(fat_beam_list, geomGlob, Btor, Ipl, n_slit=2)
 
 # %% plot SVs
 hbplot.plot_svs(fat_beam_list, geomGlob, Btor, Ipl, n_slit='all',
-                plot_prim=True, plot_sec=False, plot_zones=True,
+                plot_prim=True, plot_sec=False, plot_zones=False,
                 plot_cut=False, alpha_xy=10, alpha_zy=20)
-hbplot.plot_svs(fat_beam_list, geomGlob, Btor, Ipl, n_slit='all',
+hbplot.plot_svs(fat_beam_list, geomGlob, Btor, Ipl, n_slit=2,
                 plot_prim=True, plot_sec=False, plot_zones=True,
                 plot_cut=False, alpha_xy=10, alpha_zy=20)

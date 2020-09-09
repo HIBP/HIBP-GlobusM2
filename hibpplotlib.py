@@ -907,7 +907,7 @@ def plot_fat_beam(fat_beam_list, geom, Btor, Ipl, n_slit='all'):
     for tr in fat_beam_list:
         # plot primary trajectory
         tr.plot_prim(ax1, axes='XY', color='k', full_primary=True)
-        tr.plot_prim(ax2, axes='XZ', color='k', full_primary=True)
+        tr.plot_prim(ax2, axes='XZ', color='k', full_primary=False)
         tr.plot_prim(ax3, axes='ZY', color='k', full_primary=True)
         # plot first point
         ax1.plot(tr.RV0[0, 0], tr.RV0[0, 1], 'o',
@@ -978,6 +978,13 @@ def plot_svs(fat_beam_list, geom, Btor, Ipl, n_slit='all',
     else:
         slits = [n_slit]
 
+    # draw slits
+    for i in range(n_slits):
+        c = colors[i]
+        geom.plot_slits(ax1, axes='XY', color=c, n_slit=i)
+        geom.plot_slits(ax3, axes='ZY', color=c, n_slit=i)
+
+    # plot sample volumes
     for i in slits:
         c = colors[i]
         coords = np.empty([0, 3])
