@@ -180,8 +180,7 @@ class Traj():
         self.tag_sec = tag_column
 
     def pass_fan(self, r_aim, E_interp, B_interp, geom,
-                 stop_plane_n=np.array([1, 0, 0]),
-                 r_plasma=0.3, R=0.36, elon=1.8, eps_xy=1e-3, eps_z=1e-3,
+                 stop_plane_n=np.array([1, 0, 0]), eps_xy=1e-3, eps_z=1e-3,
                  no_intersect=False, no_out_of_bounds=False):
         ''' passing fan from initial point self.RV0
         geom - geometry object
@@ -198,8 +197,8 @@ class Traj():
 
         # check eliptical radius of particle
         # R - major radius of a torus, elon - size along Y
-        mask = np.sqrt((self.RV_prim[:, 0] - R)**2 +
-                       (self.RV_prim[:, 1] / elon)**2) <= r_plasma
+        mask = np.sqrt((self.RV_prim[:, 0] - geom.R)**2 +
+                       (self.RV_prim[:, 1] / geom.elon)**2) <= geom.r_plasma
         self.tag_prim[mask] = 11
 
         # list of initial points of secondary trajectories
@@ -538,7 +537,7 @@ def runge_kutt(q, m, RV, dt, E, B):
 
 # %%
 def optimize_B2(tr, r_aim, geom, UB2, dUB2, E, B, dt,
-                stop_plane_n, r_plasma, R, elon, eps_xy=1e-3, eps_z=1e-3):
+                stop_plane_n, eps_xy=1e-3, eps_z=1e-3):
     ''' get voltages on B2 plates and choose secondary trajectory
     which goes into r_aim
     '''
@@ -549,8 +548,8 @@ def optimize_B2(tr, r_aim, geom, UB2, dUB2, E, B, dt,
         tr.U[1], tr.dt1, tr.dt2 = UB2, dt, dt
         # pass fan of trajectories
         tr.pass_fan(r_aim, E, B, geom, stop_plane_n=stop_plane_n,
-                    r_plasma=r_plasma, R=R, elon=elon, eps_xy=eps_xy,
-                    eps_z=eps_z, no_intersect=True, no_out_of_bounds=True)
+                    eps_xy=eps_xy, eps_z=eps_z,
+                    no_intersect=True, no_out_of_bounds=True)
         if tr.IntersectGeometry:
             break
         if len(tr.Fan) == 0:
@@ -745,7 +744,7 @@ def pass_to_slits(tr, dt, E, B, geom, timestep_divider=10):
 
     # pass fan of trajectories
     tr.pass_fan(rs, E, B, geom, stop_plane_n=slit_plane_n,
-                r_plasma=0.3, R=0.36, elon=1.8,
+                eps_xy=1e-3, eps_z=1e-3,
                 no_intersect=True, no_out_of_bounds=True)
     # create slits polygon
     ax_index = np.argmax(slit_plane_n)

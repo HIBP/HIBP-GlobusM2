@@ -44,6 +44,11 @@ if __name__ == '__main__':
 # %% PRIMARY beamline geometry
     geomGlob = hb.Geometry()
 
+    # plasma parameters
+    geomGlob.R = 0.36  # tokamak major radius [m]
+    geomGlob.r_plasma = 0.3  # plasma minor radius [m]
+    geomGlob.elon = 1.8  # plasma elongation
+
     # alpha and beta angles of the PRIMARY beamline
     alpha_prim = 60.  # deg
     beta_prim = -5  # deg
@@ -236,8 +241,7 @@ if __name__ == '__main__':
                          U_list, dt)
 
             tr = hb.optimize_B2(tr, r_aim, geomGlob, UB2, dUB2, E, B, dt,
-                                stop_plane_n, r_plasma, R, elon,
-                                eps_xy=1e-3, eps_z=1e-3)
+                                stop_plane_n, eps_xy=1e-3, eps_z=1e-3)
 
             if tr.IntersectGeometry:
                 print('NOT saved, primary intersected geometry')
