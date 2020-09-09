@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Feb 15 16:01:34 2019
-
-@author: user
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches

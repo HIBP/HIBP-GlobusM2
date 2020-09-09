@@ -37,10 +37,6 @@ if __name__ == '__main__':
     UA3 = 0.0  # [kV]
     dUA3 = 40.0  # [kV/m]
 
-    r_plasma = 0.3
-    R = 0.36  # tokamak major radius [m]
-    elon = 1.8  # plasma elongation
-
 # %% PRIMARY beamline geometry
     geomGlob = hb.Geometry()
 
@@ -276,6 +272,7 @@ if __name__ == '__main__':
                               eps_xy=1e-3, eps_z=1e-3)
         if not tr.IntersectGeometrySec:
             traj_list_oct.append(tr)
+            print('\n Trajectory saved')
             UA3 = tr.U[2]
             UB3 = tr.U[3]
 

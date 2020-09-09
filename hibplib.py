@@ -28,6 +28,7 @@ class Traj():
         self.m = m
         self.Ebeam = Ebeam
         drad = np.pi/180.  # converts degrees to radians
+        # particle velocity:
         Vabs = np.sqrt(2 * Ebeam * 1.602176487E-16 / m)
         V0 = np.array([-Vabs * np.cos(alpha*drad)*np.cos(beta*drad),
                        -Vabs * np.sin(alpha*drad),
@@ -324,10 +325,6 @@ class Geometry():
     def check_plates_intersect(self, point1, point2):
         segment_coords = np.array([point1, point2])
         for key in self.plates_edges:
-            # maxpoint = np.max(np.max(self.plates_edges[key], axis=1), axis=0)
-            # minpoint = np.min(np.min(self.plates_edges[key], axis=1), axis=0)
-
-            # if np.all(point1 < maxpoint) and np.all(point1 > minpoint):
             if segm_poly_intersect(self.plates_edges[key][0],
                                    segment_coords) or \
                 segm_poly_intersect(self.plates_edges[key][1],
@@ -349,7 +346,6 @@ class Geometry():
         slit_alpha = self.sec_angles[0]
         # angle of slit line with XZ plane
         slit_beta = self.sec_angles[1]
-        # convert degrees to radians
 
         # calculate slits coordinates
         r_slits = np.zeros([n_slits, 5, 3])
@@ -601,7 +597,11 @@ def optimize_B2(tr, r_aim, geom, UB2, dUB2, E, B, dt,
         while True:
             # make a small step along primary trajectory
             r = RV_old[0, :3]
-            B_local = return_B(r, B)
+            try:
+                B_local = return_B(r, B)
+            except ValueError:
+                print('Btor out of bounds while optimizing B2')
+                break
             E_local = np.array([0., 0., 0.])
             RV_new = runge_kutt(tr.q, tr.m, RV_old, tr.dt1, E_local, B_local)
             # pass new secondary trajectory
@@ -639,6 +639,7 @@ def optimize_B2(tr, r_aim, geom, UB2, dUB2, E, B, dt,
         else:
             break
 
+        # check if there is a loop while finding secondary to aim
         if attempts_opt > 20:
             print('too many attempts B2!')
             break
@@ -1041,7 +1042,7 @@ def return_E(r, Ein, U):
             Eout[2] += Ein[i][2](r)*U[i]
             # print('U = ', U[i])
             # print('E = ', Eout)
-        except:
+        except ValueError:
             continue
     return Eout
 
@@ -1186,7 +1187,6 @@ def read_B(Btor, Ipl, PF_dict, dirname='magfield'):
         else:
             name = filename.replace('magfield', '').replace('.npy', '')
             print('Reading {} magnetic field...'.format(name))
-            # Icir = PF_dict[name]
             Icir = PF_dict[name][4] * PF_dict[name][5]
             print('Current = ', Icir)
             B_read = np.load(dirname + '/' + filename) * Icir
