@@ -44,15 +44,15 @@ if __name__ == '__main__':
     # define plates geometry
     # initially plates are parallel to XZ plane
     length = 0.15  # along X [m]
-    width = 0.1  # along Z [m]
-    thick = 0.01  # [m]
+    width = 0.1  # 0.05  # along Z [m]
+    thick = 0.005  # [m]
     gap = 0.1  # 0.05  # distance between plates along Y [m]
     plts_geom = np.array([length, width, thick, gap])
 
     # define center position
     plts_center = np.array([0., 0., 0.])  # plates center
-    alpha = -15.  # 60.  # angle with X axis in XY plane (alpha)
-    beta = 20.  # -5.  # angle with X axis in XZ plane (beta)
+    alpha = 0.  # angle with X axis in XY plane (alpha)
+    beta = 20.  # angle with X axis in XZ plane (beta)
     gamma0 = 0.
     # gamma 0 for A2, -90 for B2
     gamma = gamma0 - 90.  # -90. # angle of rotation around X axis (gamma)
@@ -62,8 +62,8 @@ if __name__ == '__main__':
 
     # Create mesh grid
     # length of the X-edge of the domain [m]
-    border_x = round(2*(length +
-                        abs(length*np.cos(alpha*drad)*np.cos(beta*drad))), 2)
+    border_x = round(length +
+                     2*abs(length*np.cos(alpha*drad)*np.cos(beta*drad)), 2)
     border_z = round(2*(width + abs(length*np.sin(beta*drad))), 2)
     border_y = round(2*(gap + abs(length*np.sin(alpha*drad))), 2)
     delta = thick/2  # space step

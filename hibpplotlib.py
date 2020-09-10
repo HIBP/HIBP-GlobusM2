@@ -862,7 +862,8 @@ def plot_traj_toslits(tr, geom, Btor, Ipl, plot_fan=True, plot_flux=True):
 
 
 # %%
-def plot_fat_beam(fat_beam_list, geom, Btor, Ipl, n_slit='all'):
+def plot_fat_beam(fat_beam_list, geom, Btor, Ipl, n_slit='all',
+                  full_primary=True):
 
     # fig, (ax1, ax3) = plt.subplots(nrows=1, ncols=2)
     fig, (ax1, ax2, ax3) = plt.subplots(nrows=1, ncols=3)
@@ -901,9 +902,9 @@ def plot_fat_beam(fat_beam_list, geom, Btor, Ipl, n_slit='all'):
     # plot trajectories
     for tr in fat_beam_list:
         # plot primary trajectory
-        tr.plot_prim(ax1, axes='XY', color='k', full_primary=True)
-        tr.plot_prim(ax2, axes='XZ', color='k', full_primary=False)
-        tr.plot_prim(ax3, axes='ZY', color='k', full_primary=True)
+        tr.plot_prim(ax1, axes='XY', color='k', full_primary=full_primary)
+        # tr.plot_prim(ax2, axes='XZ', color='k', full_primary=full_primary)
+        tr.plot_prim(ax3, axes='ZY', color='k', full_primary=full_primary)
         # plot first point
         ax1.plot(tr.RV0[0, 0], tr.RV0[0, 1], 'o',
                  color='k', markerfacecolor='white')
@@ -912,6 +913,9 @@ def plot_fat_beam(fat_beam_list, geom, Btor, Ipl, n_slit='all'):
         ax3.plot(tr.RV0[0, 2], tr.RV0[0, 1], 'o',
                  color='k', markerfacecolor='white')
 
+        # if no secondaries to slits - skip to next traj
+        if len(tr.RV_sec_toslits) == 0:
+            continue
         # plot secondaries
         for i in slits:
             c = colors[i]

@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 # %%
 ''' test FAT beam with focusing
 '''
-Ebeam = 40.
-UA2 = 2.0
+Ebeam = 35.
+UA2 = 0.0
 
 n_slits = 5
 # add slits to Geometry
@@ -59,7 +59,7 @@ for tr in traj_list_copy:
         # for gamma in np.arange(np.pi/n_gamma, np.pi, np.pi/n_gamma):
         for gamma in np.arange(0, np.pi, np.pi/n_gamma):
             gamma = gamma/drad
-            print('gamma = ', gamma)
+            print('\n gamma = ', gamma)
             # rotate and translate r0 to beam starting point
             r_rot = hb.rotate(r, axis=(1, 0, 0), deg=gamma)
             r_rot = hb.rotate(r_rot, axis=(0, 0, 1), deg=tr.alpha)
@@ -74,7 +74,7 @@ for tr in traj_list_copy:
             # tr_fat.U = [0., 0., 0., 0.]
             # tr_fat.pass_prim(E, B, geomGlob, tmax=0.01)
             tr_fat = hb.pass_to_slits(tr_fat, dt, E, B, geomGlob,
-                                      timestep_divider=5)
+                                      timestep_divider=8)
             fat_beam_list.append(tr_fat)
             if abs(y) < 1e-6:
                 break

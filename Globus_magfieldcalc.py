@@ -361,7 +361,7 @@ def save_B_geometry(corner1, corner2, res, dirname='magfield'):
 # %%
 if __name__ == '__main__':
 
-    save_data = False
+    save_data = True
 
     if input('Recalculate magnetic fields [y/n]? ') == 'y':
         try:
@@ -374,11 +374,11 @@ if __name__ == '__main__':
     Ipl = 0.5  # Plasma current [MA]
 
     # Define grid points to caculate B
-    resolution = 0.06  # [m]
+    resolution = 0.02  # [m]
     # xmin ymin zmin [m]
-    volume_corner1 = (0, -0.5, -0.155)
+    volume_corner1 = (0, -0.5, -0.16)
     # xmax ymax zmax [m]
-    volume_corner2 = (1.25+resolution, 1.25+resolution, 0.155+resolution)
+    volume_corner2 = (1.25+resolution, 1.25+resolution, 0.16+resolution)
 
     # create grid of points
     grid = np.mgrid[volume_corner1[0]:volume_corner2[0]:resolution,
@@ -429,6 +429,7 @@ if __name__ == '__main__':
         # B_total += B_pol_dict[coil] * PF_dict[coil]
         B_total += B_pol_dict[coil] * PF_dict[coil][4] * PF_dict[coil][5]
 
+# %%
     if save_data:
         # save geometry
         save_B_geometry(volume_corner1, volume_corner2, resolution)

@@ -760,6 +760,9 @@ def pass_to_slits(tr, dt, E, B, geom, timestep_divider=10):
         intersect_coords_flat = np.delete(fan_tr[-1, :3], ax_index, 0)
         if slits_spot_poly.contains_point(intersect_coords_flat):
             sec_ind.append(i)
+    if len(sec_ind) == 0:
+        print('\nNo secondaries go to slit spot')
+        return tr
 
     print('\nStarting precise fan calculation')
     # divide the timestep

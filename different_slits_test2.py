@@ -6,8 +6,8 @@ import copy
 # %%
 ''' pass trajectories to different slits
 '''
-Ebeam = 40.
-UA2 = 2.0
+Ebeam = 35.
+UA2 = 0.0
 
 n_slits = 5
 # add slits to Geometry

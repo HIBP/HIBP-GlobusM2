@@ -19,15 +19,15 @@ if __name__ == '__main__':
 
     # initial beam energy range
     dEbeam = 5.
-    Ebeam_range = np.arange(40., 40. + dEbeam, dEbeam)  # [keV]
+    Ebeam_range = np.arange(35., 35. + dEbeam, dEbeam)  # [keV]
 
     # A2 plates voltage
     dUA2 = 1.0  # [kV]
-    UA2_range = np.arange(-7., 7. + dUA2, dUA2)  # [kV]
+    UA2_range = np.arange(-6., 2. + dUA2, dUA2)  # [kV]
 
     # B2 plates voltage
     UB2 = 0.0  # [kV]
-    dUB2 = 5.0  # [kV/m]
+    dUB2 = 10.0  # [kV/m]
 
     # B3 voltages
     UB3 = -1.0  # [kV]
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     geomGlob.elon = 1.8  # plasma elongation
 
     # alpha and beta angles of the PRIMARY beamline
-    alpha_prim = 60.  # deg
+    alpha_prim = 45.  # 60.  # deg
     beta_prim = -5  # deg
     gamma_prim = 0.  # deg
     geomGlob.prim_angles = np.array([alpha_prim, beta_prim, gamma_prim])
@@ -93,28 +93,28 @@ if __name__ == '__main__':
     drad = np.pi/180
     # coordinates of the center of the ALPHA2 plates
     xA2 = xpatr + dist_A2*np.cos(alpha_prim*drad) * \
-          np.cos(beta_prim*drad)
+        np.cos(beta_prim*drad)
     yA2 = ypatr + dist_A2*np.sin(alpha_prim*drad)
     zA2 = zpatr - dist_A2*np.cos(alpha_prim*drad) * \
-          np.sin(beta_prim*drad)
+        np.sin(beta_prim*drad)
     rA2 = np.array([xA2, yA2, zA2])
     geomGlob.r_dict['A2'] = rA2
 
     # coordinates of the center of the BETA2 plates
     xB2 = xpatr + dist_B2*np.cos(alpha_prim*drad) * \
-          np.cos(beta_prim*drad)
+        np.cos(beta_prim*drad)
     yB2 = ypatr + dist_B2*np.sin(alpha_prim*drad)
     zB2 = zpatr - dist_B2*np.cos(alpha_prim*drad) * \
-          np.sin(beta_prim*drad)
+        np.sin(beta_prim*drad)
     rB2 = np.array([xB2, yB2, zB2])
     geomGlob.r_dict['B2'] = rB2
 
     # coordinates of the initial point of the trajectory [m]
     x0 = xpatr + dist_0*np.cos(alpha_prim*drad) * \
-         np.cos(beta_prim*drad)
+        np.cos(beta_prim*drad)
     y0 = ypatr + dist_0*np.sin(alpha_prim*drad)
     z0 = zpatr - dist_0*np.cos(alpha_prim*drad) * \
-         np.sin(beta_prim*drad)
+        np.sin(beta_prim*drad)
     r0 = np.array([x0, y0, z0])
     geomGlob.r_dict['r0'] = r0
 
@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
 # %% SECONDARY beamline geometry
     # alpha and beta angles of the SECONDARY beamline
-    alpha_sec = -15.  # deg
+    alpha_sec = 0.  # -15.  # deg
     beta_sec = 20.  # deg
     gamma_sec = 0.  # deg
     geomGlob.sec_angles = np.array([alpha_sec, beta_sec, gamma_sec])
@@ -143,7 +143,7 @@ if __name__ == '__main__':
     # distance from r_aim to the ALPHA3 center
     dist_A3 = 0.05  # 1/2 of plates length
     # distance from r_aim to the BETA3 center
-    dist_B3 = dist_A3 + 0.15 +0.05
+    dist_B3 = dist_A3 + 0.15 + 0.05
     # distance from r_aim the entrance slit of the analyzer
     dist_s = dist_B3 + 0.15/2 + 0.1
 
