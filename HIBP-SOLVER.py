@@ -19,15 +19,15 @@ if __name__ == '__main__':
 
     # initial beam energy range
     dEbeam = 5.
-    Ebeam_range = np.arange(35., 35. + dEbeam, dEbeam)  # [keV]
+    Ebeam_range = np.arange(20., 45. + dEbeam, dEbeam)  # [keV]
 
     # A2 plates voltage
     dUA2 = 1.0  # [kV]
-    UA2_range = np.arange(-6., 2. + dUA2, dUA2)  # [kV]
+    UA2_range = np.arange(-9., 2. + dUA2, dUA2)  # [kV]
 
     # B2 plates voltage
     UB2 = 0.0  # [kV]
-    dUB2 = 10.0  # [kV/m]
+    dUB2 = 6.0  # [kV/m]
 
     # B3 voltages
     UB3 = -1.0  # [kV]
@@ -42,43 +42,47 @@ if __name__ == '__main__':
 
     # plasma parameters
     geomGlob.R = 0.36  # tokamak major radius [m]
-    geomGlob.r_plasma = 0.3  # plasma minor radius [m]
+    geomGlob.r_plasma = 0.25  # plasma minor radius [m]
     geomGlob.elon = 1.8  # plasma elongation
 
     # alpha and beta angles of the PRIMARY beamline
     alpha_prim = 45.  # 60.  # deg
-    beta_prim = -5  # deg
+    beta_prim = -5.  # deg
     gamma_prim = 0.  # deg
     geomGlob.prim_angles = np.array([alpha_prim, beta_prim, gamma_prim])
 
-    # coordinates of the injection port [m]
+    port = 75
     # coordinates of injection port and chamber entrance coordinates [m]
-#   port 75 deg
-    xpatr = 0.4672459
-    ypatr = 0.5753405
-    zpatr = 0.0
-    geomGlob.chamb_ent = [(0.425, 0.583), (0.4, 0.497),
-                          (0.501, 0.491), (0.486, 0.433)]
-    geomGlob.chamb_ext = [(0.63, 0.226), (0.63, 0.085),
-                          (0.63, -0.085), (0.63, -0.226)]
-
-#   port 25 deg
-#    xpatr = 0.4659326
-#    ypatr = 0.5678362
-#    zpatr = 0.0
-#    geomGlob.chamb_ent = [(0.428, 0.588), (0.31, 0.533),
-#                          (0.458, 0.525), (0.399, 0.498)]
-#    geomGlob.chamb_ext = [(0.63, 0.226), (0.63, 0.145),
-#                          (0.63, -0.145), (0.63, -0.226)]
-
-#   port 90 deg
-#    xpatr = 0.451501 + 0.02
-#    ypatr = 0.5720209
-#    zpatr = 0.0
-#    geomGlob.chamb_ent = [(0.397, 0.55), (0.397, 0.499),
-#                          (0.50, 0.55), (0.5, 0.415)]
-#    geomGlob.chamb_ext = [(0.63, 0.226), (0.63, 0.085),
-#                          (0.63, -0.085), (0.63, -0.226)]
+    #   port 75 deg
+    if port == 75:
+        camera_contour = 'port75.txt'
+        xpatr = 0.4672459
+        ypatr = 0.5753405
+        zpatr = 0.0
+        geomGlob.chamb_ent = [(0.425, 0.583), (0.4, 0.497),
+                              (0.501, 0.491), (0.486, 0.433)]
+        geomGlob.chamb_ext = [(0.63, 0.226), (0.63, 0.085),
+                              (0.63, -0.085), (0.63, -0.226)]
+    #   port 25 deg
+    elif port == 25:
+        camera_contour = 'port25.txt'
+        xpatr = 0.4659326
+        ypatr = 0.5678362
+        zpatr = 0.0
+        geomGlob.chamb_ent = [(0.428, 0.588), (0.31, 0.533),
+                              (0.458, 0.525), (0.399, 0.498)]
+        geomGlob.chamb_ext = [(0.63, 0.226), (0.63, 0.145),
+                              (0.63, -0.145), (0.63, -0.226)]
+    #   port 90 deg
+    elif port == 90:
+        camera_contour = 'port90.txt'
+        xpatr = 0.451501  # + 0.02
+        ypatr = 0.5720209
+        zpatr = 0.0
+        geomGlob.chamb_ent = [(0.397, 0.55), (0.397, 0.499),
+                              (0.50, 0.55), (0.5, 0.415)]
+        geomGlob.chamb_ext = [(0.63, 0.226), (0.63, 0.085),
+                              (0.63, -0.085), (0.63, -0.226)]
 
     geomGlob.r_dict['patr'] = np.array([xpatr, ypatr, zpatr])
 
@@ -135,7 +139,7 @@ if __name__ == '__main__':
 
 # %% SECONDARY beamline geometry
     # alpha and beta angles of the SECONDARY beamline
-    alpha_sec = 0.  # -15.  # deg
+    alpha_sec = 1.  # -15.  # deg
     beta_sec = 20.  # deg
     gamma_sec = 0.  # deg
     geomGlob.sec_angles = np.array([alpha_sec, beta_sec, gamma_sec])
@@ -187,7 +191,7 @@ if __name__ == '__main__':
     # Poloidal Field coils
     geomGlob.pf_coils = hb.import_PFcoils('PFCoils.dat')
     # Camera contour
-    geomGlob.camera = np.loadtxt('port75.txt', skiprows=1) / 1000
+    geomGlob.camera = np.loadtxt(camera_contour, skiprows=1) / 1000
     # Separatrix contour
     geomGlob.sep = np.loadtxt('Globus_sep.txt')
     # First wall innner and outer contours
@@ -258,10 +262,14 @@ if __name__ == '__main__':
     hbplot.plot_fan(traj_list_passed, geomGlob, 50., UA2, Btor, Ipl,
                     plot_slits=True, plot_traj=True, plot_all=True)
 
-    hbplot.plot_scan(traj_list_passed, geomGlob, 30., Btor, Ipl)
+    # hbplot.plot_scan(traj_list_passed, geomGlob, 30., Btor, Ipl)
+    hbplot.plot_scan(traj_list_passed, geomGlob, 40., Btor, Ipl,
+                     subplots_vertical=True)
     # hbplot.plot_scan(traj_list_passed, geomGlob, 120., Btor, Ipl)
     # hbplot.plot_sec_angles(traj_list_passed, Btor, Ipl, Ebeam='all')
     # hbplot.plot_fan(traj_list_passed, geomGlob, 240., 40., Btor, Ipl)
+
+    # hb.save_traj_list(traj_list_passed, Btor, Ipl, r_aim, port=port)
 
 # %% SECONDARY beamline optimization
     print('\n Secondary beamline optimization')
@@ -282,4 +290,4 @@ if __name__ == '__main__':
 
 # %% Save list of trajectories
 
-    # hb.save_traj_list(traj_list_passed, Btor, Ipl, r_aim)
+    # hb.save_traj_list(traj_list_oct, Btor, Ipl, r_aim, port=port)

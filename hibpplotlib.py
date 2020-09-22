@@ -635,7 +635,7 @@ def plot_fan(traj_list, geom, Ebeam, UA2, Btor, Ipl, plot_traj=True,
 
 # %%
 def plot_scan(traj_list, geom, Ebeam, Btor, Ipl, full_primary=False,
-              plot_slits=False, plot_det_line=False):
+              plot_slits=False, plot_det_line=False, subplots_vertical=False):
     '''
     plot scan for one beam with particular energy in 2 planes: xy, xz
     :param traj_list: list of trajectories
@@ -645,7 +645,11 @@ def plot_scan(traj_list, geom, Ebeam, Btor, Ipl, full_primary=False,
     :param Ipl: plasma current [MA]
     :return: None
     '''
-    fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2)
+    if subplots_vertical:
+        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, sharex=True,
+                                       gridspec_kw={'height_ratios': [5, 1]})
+    else:
+        fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2)
 
     set_axes_param(ax1, 'X (m)', 'Y (m)')
     set_axes_param(ax2, 'X (m)', 'Z (m)')

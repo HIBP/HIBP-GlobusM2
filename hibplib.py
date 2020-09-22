@@ -923,7 +923,7 @@ def segm_poly_intersect(polygon_coords, segment_coords):
     if np.isnan(intersect_coords).any():
         return False
     else:
-        i = np.argmax(polygon_normal)
+        i = np.argmax(abs(polygon_normal))
         polygon_coords_flat = np.delete(polygon_coords, i, 1)
         intersect_coords_flat = np.delete(intersect_coords, i, 0)
         p = path.Path(polygon_coords_flat)
@@ -1308,7 +1308,7 @@ def import_Bflux(filename):
 
 
 # %%
-def save_traj_list(traj_list, Btor, Ipl, r_aim, dirname='output'):
+def save_traj_list(traj_list, Btor, Ipl, r_aim, port=75, dirname='output'):
     '''
     Save list of Traj objects to pickle file
     :param traj_list: list of trajectories
@@ -1325,7 +1325,7 @@ def save_traj_list(traj_list, Btor, Ipl, r_aim, dirname='output'):
         Ebeam_list.append(traj.Ebeam)
         UA2_list.append(traj.U[0])
 
-    dirname = dirname + '/' + 'B{}_I{}'.format(int(Btor), int(Ipl))
+    dirname = dirname + '/' + 'B{}_I{}'.format(Btor, Ipl)
 
     if not os.path.exists(dirname):
         try:
@@ -1335,8 +1335,8 @@ def save_traj_list(traj_list, Btor, Ipl, r_aim, dirname='output'):
             if e.errno != errno.EEXIST:
                 raise
 
-    fname = dirname + '/' + 'E{}-{}'.format(int(min(Ebeam_list)),
-                                            int(max(Ebeam_list))) + \
+    fname = dirname + '/' + 'port{}_E{}-{}'.format(port, int(min(Ebeam_list)),
+                                                   int(max(Ebeam_list))) + \
         '_UA2{}-{}'.format(int(min(UA2_list)), int(max(UA2_list))) + \
         '_alpha{}_beta{}'.format(int(round(traj.alpha)),
                                  int(round(traj.beta))) +\

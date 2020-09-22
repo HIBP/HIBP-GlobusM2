@@ -281,7 +281,7 @@ def calc_Bplasm_test(points, Btor, CurrTot, disc_len=0.05):
     mu_0 = 1  # 1/q at the center
     aj = a * np.sqrt(mu_a / (mu_0-mu_a))
 
-    space_step = 0.04
+    space_step = 0.023
     x_vals = np.arange(0.1, 0.55+space_step, space_step)
     y_vals = np.arange(-0.5, 0.5+space_step, space_step)
 
@@ -376,9 +376,9 @@ if __name__ == '__main__':
     # Define grid points to caculate B
     resolution = 0.02  # [m]
     # xmin ymin zmin [m]
-    volume_corner1 = (0, -0.5, -0.16)
+    volume_corner1 = (0.16, -0.3, -0.24)
     # xmax ymax zmax [m]
-    volume_corner2 = (1.25+resolution, 1.25+resolution, 0.16+resolution)
+    volume_corner2 = (1.25+resolution, 1.2+resolution, 0.24+resolution)
 
     # create grid of points
     grid = np.mgrid[volume_corner1[0]:volume_corner2[0]:resolution,
