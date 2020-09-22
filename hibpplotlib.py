@@ -635,7 +635,8 @@ def plot_fan(traj_list, geom, Ebeam, UA2, Btor, Ipl, plot_traj=True,
 
 # %%
 def plot_scan(traj_list, geom, Ebeam, Btor, Ipl, full_primary=False,
-              plot_slits=False, plot_det_line=False, subplots_vertical=False):
+              plot_slits=False, plot_det_line=False, subplots_vertical=False,
+              scale=5):
     '''
     plot scan for one beam with particular energy in 2 planes: xy, xz
     :param traj_list: list of trajectories
@@ -647,7 +648,8 @@ def plot_scan(traj_list, geom, Ebeam, Btor, Ipl, full_primary=False,
     '''
     if subplots_vertical:
         fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, sharex=True,
-                                       gridspec_kw={'height_ratios': [5, 1]})
+                                       gridspec_kw={'height_ratios':
+                                                    [scale, 1]})
     else:
         fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2)
 
@@ -1054,8 +1056,8 @@ def plot_sec_angles(traj_list, Btor, Ipl, Ebeam='all'):
     # plotting params
     fig1, ax1 = plt.subplots()
     fig2, ax2 = plt.subplots()
-    set_axes_param(ax1, 'UA2 (kV)', r'Exit $\alpha$ (grad)')
-    set_axes_param(ax2, 'UA2 (kV)', r'Exit $\beta$ (grad)')
+    set_axes_param(ax1, 'U scan (kV)', r'Exit $\alpha$ (deg)')
+    set_axes_param(ax2, 'U scan (kV)', r'Exit $\beta$ (deg)')
 
     if Ebeam == 'all':
         equal_E_list = np.array([tr.Ebeam for tr in traj_list])
@@ -1081,9 +1083,9 @@ def plot_sec_angles(traj_list, Btor, Ipl, Ebeam='all'):
 
         angles_dict[Eb] = np.array(angle_list)
         ax1.plot(angles_dict[Eb][:, 0], angles_dict[Eb][:, 2],
-                 'o', label=str(Eb))
+                 'o', label=str(Eb)+' keV')
         ax2.plot(angles_dict[Eb][:, 0], angles_dict[Eb][:, 3],
-                 'o', label=str(Eb))
+                 'o', label=str(Eb)+' keV')
 
     ax1.legend()
     ax2.legend()

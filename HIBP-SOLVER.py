@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
 # %% SECONDARY beamline geometry
     # alpha and beta angles of the SECONDARY beamline
-    alpha_sec = 1.  # -15.  # deg
+    alpha_sec = 0.  # -15.  # deg
     beta_sec = 20.  # deg
     gamma_sec = 0.  # deg
     geomGlob.sec_angles = np.array([alpha_sec, beta_sec, gamma_sec])
@@ -258,13 +258,13 @@ if __name__ == '__main__':
 
 # %% Additonal plots
 
-    hbplot.plot_grid(traj_list_passed, geomGlob, Btor, Ipl, marker_E='')
+    hbplot.plot_grid(traj_list_passed, geomGlob, Btor, Ipl, marker_A2='')
     hbplot.plot_fan(traj_list_passed, geomGlob, 50., UA2, Btor, Ipl,
                     plot_slits=True, plot_traj=True, plot_all=True)
 
     # hbplot.plot_scan(traj_list_passed, geomGlob, 30., Btor, Ipl)
     hbplot.plot_scan(traj_list_passed, geomGlob, 40., Btor, Ipl,
-                     subplots_vertical=True)
+                     subplots_vertical=True, scale=5)
     # hbplot.plot_scan(traj_list_passed, geomGlob, 120., Btor, Ipl)
     # hbplot.plot_sec_angles(traj_list_passed, Btor, Ipl, Ebeam='all')
     # hbplot.plot_fan(traj_list_passed, geomGlob, 240., 40., Btor, Ipl)
@@ -286,7 +286,9 @@ if __name__ == '__main__':
 
 # %%
     hbplot.plot_traj(traj_list_oct, geomGlob, 40., 0., Btor, Ipl)
-    hbplot.plot_scan(traj_list_oct, geomGlob, 40., Btor, Ipl)
+    # hbplot.plot_scan(traj_list_oct, geomGlob, 40., Btor, Ipl)
+    hbplot.plot_scan(traj_list_oct, geomGlob, 40., Btor, Ipl,
+                     subplots_vertical=True, scale=5)
 
 # %% Save list of trajectories
 
